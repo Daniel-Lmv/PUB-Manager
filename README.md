@@ -1,4 +1,4 @@
-# Gerenciador de Publicações
+# Gestor de Publicações
 *Endpoints:*
 | Endpoint | Http Method | Descrição |
 | -------- | --------- | ---------- |
