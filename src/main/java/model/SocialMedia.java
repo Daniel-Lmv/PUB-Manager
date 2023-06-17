@@ -23,5 +23,4 @@ public class SocialMedia {
 	{
 		this.username = username;
 	}
-	
 }

@@ -4,12 +4,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.bson.types.ObjectId;
-
 public class Publicacao {
-	private ObjectId pubId;
+	private int pubId;
 	private String userId;
-	private String status;
+	private Boolean status;
 	private String text;
 	private String summary;
 	private Date publishedAt;
@@ -37,12 +35,12 @@ public class Publicacao {
 		images.add(img);
 	}
 
-	public ObjectId getPubId() 
+	public int getPubId() 
 	{
 		return pubId;
 	}
 
-	public void setPubId(ObjectId pubId) 
+	public void setPubId(int pubId) 
 	{
 		this.pubId = pubId;
 	}
@@ -57,12 +55,12 @@ public class Publicacao {
 		this.userId = userId;
 	}
 
-	public String getStatus() 
+	public Boolean getStatus() 
 	{
 		return status;
 	}
 
-	public void setStatus(String status) 
+	public void setStatus(Boolean status) 
 	{
 		this.status = status;
 	}
@@ -106,5 +104,4 @@ public class Publicacao {
 	{
 		this.username = username;
 	}
-	
 }
