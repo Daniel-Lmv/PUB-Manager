@@ -16,71 +16,74 @@ import java.util.Optional;
 public class PubController {
 
     @Autowired
-    UserService userService;
+    private UserService service;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ArrayList<Publicacao>> getAllUserPubs(@PathVariable @Valid String userId)
+    public ResponseEntity<ArrayList<Publicacao>> getAllUserPubs(@PathVariable ObjectId userId)
     {
-        Optional<User> user = userService.selecionarPeloId(userId);
-        if(user.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }else{
-            ArrayList<Publicacao> lista = new ArrayList<>();
-            User userLocal = user.get();
-            lista = userLocal.getListaPubs();
-            return ResponseEntity.ok().body(lista);
-        }
-    }
-
-    @GetMapping("/x")
-    public void getOpen()
-    {
-
+    	try {	
+    		Optional<User> user = service.selecionarPeloId(userId);
+		        
+		    if (user.isEmpty()) {
+		        return ResponseEntity.notFound().build();
+		    } else {
+		        return ResponseEntity.ok().body(user.get().getListaPubs());
+		    }
+    	} catch (Exception e) {
+    		return ResponseEntity.internalServerError().build();
+    	}
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<Publicacao> postPub(@PathVariable @Valid String userId, @RequestBody @Valid Publicacao pub)
+    public String postPub(@PathVariable @Valid ObjectId userId, @RequestBody @Valid Publicacao pub)
     {
-        Publicacao publicacao = null;
-        Optional<User> user = userService.selecionarPeloId(userId);
-        if(user.isEmpty()){
-            userService.inserirNoBanco(new User(userId));
-        }
-
-        try{
-            publicacao = userService.adicionarPub(userId, pub);
-            return ResponseEntity.created(null).body(publicacao);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    	try {
+    		return ResponseEntity.ok().body(service.adicionarPub(userId, pub)).toString();
+    	} catch (Exception e) {
+    		return e.getLocalizedMessage();
+    	}
     }
 
     @PutMapping("/{userId}/{pubId}")
-    public ResponseEntity<Publicacao> putPub(@PathVariable @Valid String userId, @PathVariable String pubId, @RequestBody @Valid Publicacao publicacao)
+    public ResponseEntity<Publicacao> putPub(@PathVariable @Valid ObjectId userId, @PathVariable ObjectId pubId, @RequestBody @Valid Publicacao publicacao)
     {
-        try{
-            Publicacao pub = userService.alterarPub(userId, pubId, publicacao);
-            if(pub != null){
-                return ResponseEntity.ok().body(pub);
-            }else {
-                return ResponseEntity.badRequest().build();
+        try {
+        	Optional<User> user = service.selecionarPeloId(userId);
+        	
+        	if (user.isEmpty()) {
+                return ResponseEntity.notFound().build();
             }
-        }catch (Exception e){
+        	
+        	Publicacao pub = user.get().getPubById(pubId);
+            
+            if (pub == null) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok().body(service.alterarPub(userId, pub));
+            }
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/{userId}/{pubId}")
-    public ResponseEntity<Publicacao> delPub(@PathVariable @Valid String userId, @PathVariable String pubId)
+    public ResponseEntity<Publicacao> delPub(@PathVariable @Valid ObjectId userId, @PathVariable ObjectId pubId)
     {
-        try{
-            Publicacao pub = userService.deletarPub(userId, pubId);
-            if(pub != null){
-                return ResponseEntity.ok().body(pub);
-            }else {
-                return ResponseEntity.badRequest().build();
+    	try {
+    		Optional<User> user = service.selecionarPeloId(userId);
+        	
+        	if (user.isEmpty()) {
+                return ResponseEntity.notFound().build();
             }
-        }catch (Exception e){
+        	
+        	Publicacao pub = user.get().getPubById(pubId);
+            
+            if (pub == null) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok().body(user.get().removePub(pubId));
+            }
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
