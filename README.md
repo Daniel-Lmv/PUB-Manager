@@ -1,8 +1,20 @@
 # Gestor de Publicações
+*Formato do JSON*
+
+{
+    "pubId": long,
+    "user": String,
+    "status": boolean,
+    "publishedAt": java.time.Instant,
+    "text": String,
+    "summary": String
+}
+
 *Endpoints:*
 | Endpoint | HTTP Method | Descrição |
 | -------- | --------- | ---------- |
-| pub-manager/v1/pubs/user_Id | GET | Retorna todas as publicaçõe de um usuário |
-| pub-manager/v1/pubs/user_Id | POST | Salva uma publicação |
-| pub-manager/v1/pubs/user_Id/pub_Id | PUT | Atualiza uma publicação x de um usuário y |
-| pub-manager/v1/pubs/user_Id/pub_Id | DELETE | Deleta uma publicação x de um usuário y |
+| pub-manager/v1/pubs | GET | Retorna todas as publicações |
+| pub-manager/v1/pubs/pubId | GET | Retorna uma publicação a partir do id |
+| pub-manager/v1/pubs | POST | Salva uma publicação (enviada no corpo da requisição) |
+| pub-manager/v1/pubs | PUT | Atualiza uma publicação (enviada no corpo da requisição) |
+| pub-manager/v1/pubs/pub_Id | DELETE | Deleta uma publicação |

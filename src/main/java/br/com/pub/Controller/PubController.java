@@ -1,90 +1,69 @@
 package br.com.pub.Controller;
 
 import br.com.pub.Model.Publicacao;
-import br.com.pub.Model.User;
-import br.com.pub.Service.UserService;
+import br.com.pub.Service.PubService;
 import jakarta.validation.Valid;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pub-manager/v1/pubs")
 public class PubController {
 
     @Autowired
-    private UserService service;
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<ArrayList<Publicacao>> getAllUserPubs(@PathVariable ObjectId userId)
+    private PubService service;
+    
+    @GetMapping()
+    public List<Publicacao> getPubs()
     {
-    	try {	
-    		Optional<User> user = service.selecionarPeloId(userId);
-		        
-		    if (user.isEmpty()) {
-		        return ResponseEntity.notFound().build();
-		    } else {
-		        return ResponseEntity.ok().body(user.get().getListaPubs());
-		    }
-    	} catch (Exception e) {
-    		return ResponseEntity.internalServerError().build();
+    	return service.retornarPubs();
+    }
+
+    @GetMapping("/{pubId}")
+    public ResponseEntity<Publicacao> getPub(@PathVariable @Valid long pubId)
+    {
+    	Publicacao pub = service.retornarPub(pubId);
+    	
+    	if (pub.equals(null)) {
+    		return ResponseEntity.notFound().build();
     	}
+    	
+    	return ResponseEntity.ok().body(pub);
     }
 
-    @PostMapping("/{userId}")
-    public String postPub(@PathVariable @Valid ObjectId userId, @RequestBody @Valid Publicacao pub)
+    @PostMapping()
+    public ResponseEntity<Publicacao> postPub(@RequestBody @Valid Publicacao pub)
     {
-    	try {
-    		return ResponseEntity.ok().body(service.adicionarPub(userId, pub)).toString();
-    	} catch (Exception e) {
-    		return e.getLocalizedMessage();
+    	service.adicionarPub(pub);
+    	
+    	return ResponseEntity.created(null).body(pub);
+    }
+
+    @PutMapping()
+    public ResponseEntity<Publicacao> putPub(@RequestBody @Valid Publicacao publicacao)
+    {
+    	Publicacao pub = service.retornarPub(publicacao.getPubId());
+    	
+    	if (pub.equals(null)) {
+    		return ResponseEntity.notFound().build();
     	}
+    	
+        service.alterarPub(publicacao);
+        return ResponseEntity.ok().body(pub);
     }
 
-    @PutMapping("/{userId}/{pubId}")
-    public ResponseEntity<Publicacao> putPub(@PathVariable @Valid ObjectId userId, @PathVariable ObjectId pubId, @RequestBody @Valid Publicacao publicacao)
+    @DeleteMapping("/{pubId}")
+    public ResponseEntity<Publicacao> delPub(@PathVariable long pubId)
     {
-        try {
-        	Optional<User> user = service.selecionarPeloId(userId);
-        	
-        	if (user.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-        	
-        	Publicacao pub = user.get().getPubById(pubId);
-            
-            if (pub == null) {
-                return ResponseEntity.notFound().build();
-            } else {
-                return ResponseEntity.ok().body(service.alterarPub(userId, pub));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @DeleteMapping("/{userId}/{pubId}")
-    public ResponseEntity<Publicacao> delPub(@PathVariable @Valid ObjectId userId, @PathVariable ObjectId pubId)
-    {
-    	try {
-    		Optional<User> user = service.selecionarPeloId(userId);
-        	
-        	if (user.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-        	
-        	Publicacao pub = user.get().getPubById(pubId);
-            
-            if (pub == null) {
-                return ResponseEntity.notFound().build();
-            } else {
-                return ResponseEntity.ok().body(user.get().removePub(pubId));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    	Publicacao pub = service.retornarPub(pubId);
+    	
+    	if (pub.equals(null)) {
+    		return ResponseEntity.notFound().build();
+    	}
+    	
+        service.deletarPub(pubId);
+        return ResponseEntity.ok().body(null);
     }
 }
