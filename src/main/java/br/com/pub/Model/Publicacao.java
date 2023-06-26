@@ -16,6 +16,7 @@ import org.springframework.data.annotation.Id;
 public class Publicacao {
     @Id
     private ObjectId pubId;
+    
     private String status;
     private Instant publishedAt;
     

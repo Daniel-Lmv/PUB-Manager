@@ -23,11 +23,10 @@ public class User {
     @NotBlank
     private ObjectId userId;
 
-    private ArrayList<Publicacao> listaPubs;
+    private ArrayList<Publicacao> listaPubs = new ArrayList<>();
 
     public User(ObjectId id){
         this.userId = id;
-        this.listaPubs = new ArrayList<>();
     }
     
     public ArrayList<Publicacao> getListaPubs () {
@@ -44,7 +43,7 @@ public class User {
     }
     
     public void addToListaPubs (Publicacao pub) {
-    	listaPubs.add(pub);
+    	listaPubs.add(pub);;
     }
     
     public void modifyPub (Publicacao pub) {

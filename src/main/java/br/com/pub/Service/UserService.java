@@ -69,7 +69,7 @@ public class UserService {
 	    if (user.isEmpty()) {
 	        return null;
 	    }
-
+	    
 	    Publicacao pubDeletada = user.get().removePub(pubId);
 	    atualizarUser(userId, user.get());
 	    return pubDeletada;
