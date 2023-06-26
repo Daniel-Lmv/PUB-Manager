@@ -3,10 +3,15 @@
 
 {
     "pubId": long,
+    
     "user": String,
+    
     "status": boolean,
+    
     "publishedAt": java.time.Instant,
+    
     "text": String,
+    
     "summary": String
 }
 
