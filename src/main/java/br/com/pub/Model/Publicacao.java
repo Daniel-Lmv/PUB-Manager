@@ -35,7 +35,7 @@ public class Publicacao {
     @Field
     private String summary;
 
-    public long getPubId () {
+    public long getPubId() {
     	return pubId;
     }
     

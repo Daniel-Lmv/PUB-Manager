@@ -16,14 +16,12 @@ public class PubController {
     private PubService service;
     
     @GetMapping()
-    public List<Publicacao> getPubs()
-    {
+    public List<Publicacao> getPubs() {
     	return service.retornarPubs();
     }
 
     @GetMapping("/{pubId}")
-    public ResponseEntity<Publicacao> getPub(@PathVariable @Valid long pubId)
-    {
+    public ResponseEntity<Publicacao> getPub(@PathVariable @Valid long pubId) {
     	Publicacao pub = service.retornarPub(pubId);
     	
     	if (pub.equals(null)) {
@@ -32,18 +30,21 @@ public class PubController {
     	
     	return ResponseEntity.ok().body(pub);
     }
+    
+    @GetMapping("/user/{user}")
+    public List<Publicacao> getPubsFromUser(@PathVariable @Valid String user) {
+    	return service.retornarPubsDoUsuario(user);
+    }
 
     @PostMapping()
-    public ResponseEntity<Publicacao> postPub(@RequestBody @Valid Publicacao pub)
-    {
+    public ResponseEntity<Publicacao> postPub(@RequestBody @Valid Publicacao pub) {
     	service.adicionarPub(pub);
     	
     	return ResponseEntity.created(null).body(pub);
     }
 
     @PutMapping()
-    public ResponseEntity<Publicacao> putPub(@RequestBody @Valid Publicacao publicacao)
-    {
+    public ResponseEntity<Publicacao> putPub(@RequestBody @Valid Publicacao publicacao) {
     	Publicacao pub = service.retornarPub(publicacao.getPubId());
     	
     	if (pub.equals(null)) {
@@ -55,8 +56,7 @@ public class PubController {
     }
 
     @DeleteMapping("/{pubId}")
-    public ResponseEntity<Publicacao> delPub(@PathVariable long pubId)
-    {
+    public ResponseEntity<Publicacao> delPub(@PathVariable @Valid long pubId) {
     	Publicacao pub = service.retornarPub(pubId);
     	
     	if (pub.equals(null)) {

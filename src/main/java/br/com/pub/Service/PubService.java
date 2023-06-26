@@ -23,6 +23,10 @@ public class PubService {
 		Publicacao pub = repo.findBypubId(pubId);
 	    return pub;
 	}
+	
+	public List<Publicacao> retornarPubsDoUsuario(String user) {
+		return repo.findByuser(user);
+	}
 
 	public void adicionarPub(Publicacao novaPublicacao){
 	    repo.insert(novaPublicacao);
