@@ -2,6 +2,7 @@
 *Formato do JSON*
 
 {
+    
     "pubId": long,
     
     "user": String,
@@ -13,6 +14,7 @@
     "text": String,
     
     "summary": String
+    
 }
 
 *Endpoints:*
