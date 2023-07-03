@@ -1,8 +1,8 @@
 package br.com.pub.Service;
 
 import java.util.List;
+import java.time.Instant;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +28,30 @@ public class PubService {
 		return repo.findByuser(user);
 	}
 
-	public void adicionarPub(Publicacao novaPublicacao){
+	public long adicionarPub(Publicacao novaPublicacao){
+		long id = 0;
+		
+		while (repo.existsById(id)) {
+			id++;
+		}
+		
+		novaPublicacao.setPubId(id);
+		novaPublicacao.setPublishedAt(Instant.now());
+		
 	    repo.insert(novaPublicacao);
+	    
+	    return id;
 	}
 
-	public void alterarPub(Publicacao pubAlterada){
-	    Publicacao pub = retornarPub(pubAlterada.getPubId());
+	public void alterarPub(long pubId, Publicacao pubAlterada){
+	    Publicacao pub = retornarPub(pubId);
+	    deletarPub(pubId);
 	    
 	    if (!pub.equals(null)) {
-	    	BeanUtils.copyProperties(pubAlterada, pub);
-	    	repo.save(pub);
+	    	pub.setUser(pubAlterada.getUser());
+	    	pub.setText(pubAlterada.getText());
+	    	pub.setSummary(pubAlterada.getSummary());
+	    	repo.insert(pub);
 	    }
 	}
 

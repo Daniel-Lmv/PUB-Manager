@@ -16,8 +16,8 @@ public class PubController {
     private PubService service;
     
     @GetMapping()
-    public List<Publicacao> getPubs() {
-    	return service.retornarPubs();
+    public ResponseEntity<List<Publicacao>> getPubs() {
+    	return ResponseEntity.ok().body(service.retornarPubs());
     }
 
     @GetMapping("/{pubId}")
@@ -32,27 +32,24 @@ public class PubController {
     }
     
     @GetMapping("/user/{user}")
-    public List<Publicacao> getPubsFromUser(@PathVariable @Valid String user) {
-    	return service.retornarPubsDoUsuario(user);
+    public ResponseEntity<List<Publicacao>> getPubsFromUser(@PathVariable @Valid String user) {
+    	return ResponseEntity.ok().body(service.retornarPubsDoUsuario(user));
     }
 
     @PostMapping()
-    public ResponseEntity<Publicacao> postPub(@RequestBody @Valid Publicacao pub) {
-    	service.adicionarPub(pub);
-    	
-    	return ResponseEntity.created(null).body(pub);
+    public ResponseEntity<Long> postPub(@RequestBody @Valid Publicacao pub) {
+    	long id = service.adicionarPub(pub);
+    	return ResponseEntity.created(null).body(id);
     }
 
-    @PutMapping()
-    public ResponseEntity<Publicacao> putPub(@RequestBody @Valid Publicacao publicacao) {
-    	Publicacao pub = service.retornarPub(publicacao.getPubId());
-    	
-    	if (pub.equals(null)) {
+    @PutMapping("/{pubId}")
+    public ResponseEntity<Publicacao> putPub(@PathVariable @Valid long pubId, @RequestBody @Valid Publicacao publicacao) {
+    	if (service.retornarPub(pubId).equals(null)) {
     		return ResponseEntity.notFound().build();
     	}
     	
-        service.alterarPub(publicacao);
-        return ResponseEntity.ok().body(pub);
+        service.alterarPub(pubId, publicacao);
+        return ResponseEntity.ok().body(null);
     }
 
     @DeleteMapping("/{pubId}")
